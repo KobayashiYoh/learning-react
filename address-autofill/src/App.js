@@ -1,19 +1,33 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Spinner as BootstrapSpinner } from 'react-bootstrap';
+
+function Spinner({
+  animation = "border",
+  ...otherProps
+}) {
+  return (
+    <BootstrapSpinner animation={animation} {...otherProps} />
+  )
+}
 
 function App() {
   const [zip, setZip] = useState(""); //　郵便番号（入力）
   const [query, setQuery] = useState("");
   const [resultTxt, setResultTxt] = useState(""); //　住所
+  const [isLoading, setLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = () => {
+      setLoading(true)
       console.log("データを取得します");
       console.log(query);
 
       axios
         .get(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${query}`)
         .then((res) => {
+          setLoading(false)
           console.log(res);
           // APIがうまく動作していない時のエラー
           if (res.status !== 200) {
@@ -67,7 +81,7 @@ function App() {
         <div>
           <input type="text" value={zip} placeholder="郵便番号" onChange={(e) => setZip(e.target.value)} />
           <button onClick={onClickGetArea} >住所検索</button>
-          <p>{resultTxt}</p>
+          <p>{isLoading ? <Spinner variant="primary" /> : resultTxt}</p>
         </div>
       </header>
     </div>

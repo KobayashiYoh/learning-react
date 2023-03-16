@@ -15,6 +15,7 @@ function Spinner({
 function App() {
   const [zip, setZip] = useState(""); //　郵便番号（入力）
   const [query, setQuery] = useState("");
+  const [address, setAddress] = useState("");
   const [resultTxt, setResultTxt] = useState(""); //　住所
   const [isLoading, setLoading] = useState(false)
 
@@ -51,6 +52,7 @@ function App() {
             setResultTxt(
               `〒${getAddress.zipcode}\n${getAddress.address1}${getAddress.address2}${getAddress.address3}`
             );
+            setAddress(`${getAddress.address1}${getAddress.address2}${getAddress.address3}`);
           }
         })
         .catch((err) =>
@@ -73,15 +75,17 @@ function App() {
 
     //　データ取得
     setQuery(zip);
+    console.log(resultTxt);
   };
 
   return (
     <div className="App">
       <header className="App-header">
         <div>
-          <input type="text" value={zip} placeholder="郵便番号" onChange={(e) => setZip(e.target.value)} />
+          <input type="text" value={zip} placeholder="郵便番号(ハイフンなし)" onChange={(e) => setZip(e.target.value)} />
           <button onClick={onClickGetArea} >住所検索</button>
-          <p>{isLoading ? <Spinner variant="primary" /> : resultTxt}</p>
+          <input type="text" value={address} placeholder="住所" />
+          {isLoading && <Spinner variant="primary" />}
         </div>
       </header>
     </div>

@@ -7,7 +7,6 @@ function App() {
 
   const handlePlay = (e) => {
     setCount(count + 1);
-    console.log("play");
     const audio = new Audio(sound);
     audio.play();
   }

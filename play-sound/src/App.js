@@ -1,17 +1,28 @@
 import './App.css';
+import React, { useState } from 'react';
 import sound from './cat.mp3';
 
-const handlePlay = (e) => {
-  console.log("play");
-  const audio = new Audio(sound);
-  audio.play();
-}
-
 function App() {
+  const [count, setCount] = useState(0);
+
+  const handlePlay = (e) => {
+    setCount(count + 1);
+    console.log("play");
+    const audio = new Audio(sound);
+    audio.play();
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-        <button onClick={handlePlay}>🐈</button>
+        {(() => {
+          const d = [];
+          for (let i = 0; i < count; i++) {
+            d.push("🐈");
+          }
+          return d;
+        })()}
+        <button onClick={handlePlay}>＋🐈</button>
       </header>
     </div>
   );

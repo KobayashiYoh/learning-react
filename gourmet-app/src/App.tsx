@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { fetchData } from './services/api'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    console.log("run app");
+    fetchData();
+  }, []);
 
   return (
     <>

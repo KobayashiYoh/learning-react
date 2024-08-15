@@ -4,7 +4,7 @@ import React from "react";
 interface SingleDigitCodeFieldProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void; // onKeyDownを追加
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   ref?: React.Ref<HTMLInputElement>;
 }
 
@@ -17,12 +17,21 @@ export const SingleDigitCodeField = React.forwardRef<
       variant="outlined"
       value={value}
       onChange={onChange}
-      onKeyDown={onKeyDown} // ここでonKeyDownを使用
+      onKeyDown={onKeyDown}
       inputProps={{
         maxLength: 1,
         pattern: "\\d*",
       }}
-      inputRef={ref} // refをinputRefに渡す
+      inputRef={ref}
+      sx={{
+        width: '56px',
+        height: '64px',
+        textAlign: 'center',
+        '& input': {
+          textAlign: 'center',
+          fontSize: '24px',
+        },
+      }}
     />
   );
 });

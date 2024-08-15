@@ -49,14 +49,28 @@ export const ConfirmationCodeInputPage = () => {
 
   const Row = styled.div`
     display: flex;
+    gap: 4px;
+  `;
+
+  const Title = styled.div`
+    font-weight: bold;
+    font-size: 24px;
+  `;
+
+  const TitleHeader = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 16px;
   `;
 
   return (
     <Page>
       <Form>
-        <Typography variant="h4" component="h2" gutterBottom>
-          コードの確認
-        </Typography>
+        <TitleHeader>
+          <Title>コードの確認</Title>
+          {isLoading && <CircularProgress size={32} />}
+        </TitleHeader>
         <FormTitle>確認コード（6桁）</FormTitle>
         <Row>
           {Array.from({ length: 6 }).map((_, index) => (
@@ -70,7 +84,6 @@ export const ConfirmationCodeInputPage = () => {
           ))}
         </Row>
         {error && <Typography color="error">{error}</Typography>}
-        {isLoading && <CircularProgress />}
       </Form>
     </Page>
   );

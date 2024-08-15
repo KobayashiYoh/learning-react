@@ -1,30 +1,28 @@
-import React, { forwardRef } from "react";
 import { TextField } from "@mui/material";
+import React from "react";
 
 interface SingleDigitCodeFieldProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  index: number; // index を追加していることを確認
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void; // onKeyDownを追加
+  ref?: React.Ref<HTMLInputElement>;
 }
 
-const SingleDigitCodeField = forwardRef<
+export const SingleDigitCodeField = React.forwardRef<
   HTMLInputElement,
   SingleDigitCodeFieldProps
->(({ value, onChange }, ref) => {
+>(({ value, onChange, onKeyDown }, ref) => {
   return (
     <TextField
       variant="outlined"
       value={value}
       onChange={onChange}
+      onKeyDown={onKeyDown} // ここでonKeyDownを使用
       inputProps={{
         maxLength: 1,
-        pattern: "\\d*", // 数字のみを許可
+        pattern: "\\d*",
       }}
-      inputRef={ref} // inputRef を設定
+      inputRef={ref} // refをinputRefに渡す
     />
   );
 });
-
-SingleDigitCodeField.displayName = "SingleDigitCodeField";
-
-export { SingleDigitCodeField };

@@ -15,7 +15,6 @@ export const ConfirmationCodeInputPage = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    // フォーカスを最初のフィールドに当てる
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
@@ -27,11 +26,21 @@ export const ConfirmationCodeInputPage = () => {
   ) => {
     handleCodeChange(event, index);
 
-    // 1文字入力後に次のフィールドへフォーカスを移す
     if (event.target.value.length === 1 && index < 5) {
       setTimeout(() => {
         inputRefs.current[index + 1]?.focus();
-      }, 0); // 微小な遅延を追加
+      }, 0);
+    }
+  };
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (event.key === "ArrowRight" && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    } else if (event.key === "ArrowLeft" && index > 0) {
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
@@ -52,7 +61,7 @@ export const ConfirmationCodeInputPage = () => {
               key={index}
               value={code[index]}
               onChange={(event) => handleChange(event, index)}
-              index={index}
+              onKeyDown={(event) => handleKeyDown(event, index)}
               ref={(el) => (inputRefs.current[index] = el)}
             />
           ))}

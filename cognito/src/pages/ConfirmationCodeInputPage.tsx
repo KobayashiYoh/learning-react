@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Typography, CircularProgress } from "@mui/material";
 import { Page } from "../components/Page";
 import { Form } from "../components/Form";
@@ -12,13 +12,14 @@ export const ConfirmationCodeInputPage = () => {
   const { code, isLoading, error, handleCodeChange } =
     useConfirmationCodeInputState(username);
 
+  const [currentIndex, setCurrentIndex] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (inputRefs.current[0]) {
-      inputRefs.current[0].focus();
+    if (inputRefs.current[currentIndex]) {
+      inputRefs.current[currentIndex].focus();
     }
-  }, []);
+  }, [currentIndex]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -27,9 +28,7 @@ export const ConfirmationCodeInputPage = () => {
     handleCodeChange(event, index);
 
     if (event.target.value.length === 1 && index < 5) {
-      setTimeout(() => {
-        inputRefs.current[index + 1]?.focus();
-      }, 0);
+      setCurrentIndex(index + 1);
     }
   };
 
@@ -38,9 +37,13 @@ export const ConfirmationCodeInputPage = () => {
     index: number
   ) => {
     if (event.key === "ArrowRight" && index < 5) {
-      inputRefs.current[index + 1]?.focus();
+      setCurrentIndex(index + 1);
     } else if (event.key === "ArrowLeft" && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+      setCurrentIndex(index - 1);
+    } else if (event.key === "Backspace" && index > 0) {
+      setTimeout(() => {
+        setCurrentIndex(index - 1);
+      }, 0); // 微小な遅延を追加
     }
   };
 

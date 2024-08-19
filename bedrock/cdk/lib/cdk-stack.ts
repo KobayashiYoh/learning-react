@@ -1,22 +1,48 @@
-import * as cdk from "aws-cdk-lib";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { Runtime } from "aws-cdk-lib/aws-lambda";
+import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import type { Writable } from "node:stream";
-import type { Context, Handler } from "aws-lambda";
 import {
-  BedrockRuntimeClient,
-  InvokeModelWithResponseStreamCommand,
-} from "@aws-sdk/client-bedrock-runtime";
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+  Effect,
+  PolicyStatement,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
 
-export class CdkStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export class CdkStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const localNamePrefix = "your-prefix";
+    const region = "us-east-1";
+    const idPool = {
+      authenticatedRole: new Role(this, "MyAuthRole", {
+        assumedBy: new ServicePrincipal("cognito-idp.amazonaws.com"),
+      }),
+    };
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'CdkQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const functionName = `${localNamePrefix}-predict-stream`;
+    const predictStreamFunction = new NodejsFunction(this, functionName, {
+      functionName,
+      runtime: Runtime.NODEJS_18_X,
+      entry: "./backend/predictStream.ts",
+      timeout: Duration.minutes(15),
+      bundling: {
+        nodeModules: ["@aws-sdk/client-bedrock-runtime"],
+      },
+      environment: {
+        MODEL_REGION: region,
+        MODEL_ID: "anthropic.claude-instant-v1",
+      },
+    });
+
+    predictStreamFunction.grantInvoke(idPool.authenticatedRole);
+
+    const bedrockPolicy = new PolicyStatement({
+      effect: Effect.ALLOW,
+      resources: ["*"],
+      actions: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+    });
+    predictStreamFunction.role?.addToPrincipalPolicy(bedrockPolicy);
   }
 }

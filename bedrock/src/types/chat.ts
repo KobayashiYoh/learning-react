@@ -1,4 +1,4 @@
-export interface Chat {
-    isUser: boolean;
-    message: string;
-}
+export type Chat = {
+  isUser: boolean;
+  message: string;
+};

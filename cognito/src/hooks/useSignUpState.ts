@@ -23,11 +23,9 @@ export const useSignUpState = () => {
   const handleSignUp = async () => {
     try {
       await signUpByEmailAndPassword(email, password);
-      alert("サインアップに成功しました！");
       navigate("/confirmation-code-input");
     } catch (error) {
       console.error("サインアップエラー:", error);
-      alert("サインアップに失敗しました。");
     }
   };
 

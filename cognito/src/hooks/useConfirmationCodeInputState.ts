@@ -23,7 +23,6 @@ export const useConfirmationCodeInputState = (username: string) => {
     setLoading(true);
     try {
       await sendConfirmationCode(username, newCode.join(""));
-      alert("コードが正しく認証されました！");
       navigate("/authenticated-user");
     } catch (error) {
       setError("コードが無効です。もう一度お試しください。");

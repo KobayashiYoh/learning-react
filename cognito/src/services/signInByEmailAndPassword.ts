@@ -6,7 +6,5 @@ export const signInByEmailAndPassword = async (
 ) => {
   try {
     await signIn({ username: username, password: password });
-  } catch (error) {
-    alert(`認証に失敗しました。${error}`);
-  }
+  } catch (error) {}
 };

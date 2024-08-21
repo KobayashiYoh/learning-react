@@ -13,8 +13,8 @@ export class CdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const localNamePrefix = "your-prefix";
-    const region = "us-east-1";
+    const localNamePrefix = "bedrock-amazon-titan-text-express-v1";
+    const region = "ap-northeast-1";
     const idPool = {
       authenticatedRole: new Role(this, "MyAuthRole", {
         assumedBy: new ServicePrincipal("cognito-idp.amazonaws.com"),
@@ -32,7 +32,7 @@ export class CdkStack extends Stack {
       },
       environment: {
         MODEL_REGION: region,
-        MODEL_ID: "anthropic.claude-instant-v1",
+        MODEL_ID: "amazon.titan-text-express-v1",
       },
     });
 

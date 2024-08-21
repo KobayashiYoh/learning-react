@@ -1,5 +1,5 @@
 import { Alert, Box, IconButton, LinearProgress } from "@mui/material";
-import { useChatState } from "../hooks/useChatState";
+import { useChat } from "../hooks/useChatState";
 import { ChatItem } from "../components/ChatItem";
 import { ChatFooter } from "../components/ChatFooter";
 import CloseIcon from "@mui/icons-material/Close";
@@ -13,7 +13,7 @@ export const ChatPage = () => {
     handleSend,
     setShowErrorAlert,
     setInputText,
-  } = useChatState();
+  } = useChat();
 
   return (
     <Box

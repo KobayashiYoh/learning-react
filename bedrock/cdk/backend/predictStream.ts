@@ -1,5 +1,5 @@
-import { Writable } from "node:stream";
-import { Context, Handler } from "aws-lambda";
+import type { Writable } from "node:stream";
+import type { Context, Handler } from "aws-lambda";
 import {
   BedrockRuntimeClient,
   InvokeModelWithResponseStreamCommand,

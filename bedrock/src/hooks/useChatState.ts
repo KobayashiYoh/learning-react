@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { predictStream } from "../services/predictStream";
 import { Chat } from "../types/chat";
-import { postBedrock } from "../services/postBedrock";
 
-export const useChatState = () => {
+export const useChat = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
   const [inputText, setInputText] = useState<string>("");
@@ -11,30 +11,52 @@ export const useChatState = () => {
     { message: "回答です。", isUser: false },
   ]);
 
-  const handleSend = async () => {
-    if (isLoading || inputText.length === 0) {
+  const handleSend = useCallback(async () => {
+    if (isLoading || inputText.trim().length === 0) {
       return;
     }
+    setChats((prevChats) => {
+      const userChat: Chat = { message: inputText, isUser: true };
+      return [...prevChats, userChat];
+    });
+    setInputText("");
     setLoading(true);
     setShowErrorAlert(false);
+    // Bedrockに送る情報をchatsから作成する
+    const sendMessage = [...chats, { isUser: true, message: inputText }].reduce(
+      (acc, cur) => {
+        if (cur.isUser) {
+          return `${acc} Human: ${cur.message}\n\n Assistant: `;
+        } else {
+          return `${acc} ${cur.message}\n\n`;
+        }
+      },
+      ""
+    );
     try {
-      const newUserChat: Chat = { message: inputText, isUser: true };
-      setInputText("");
-      setChats((prevChats) => [...prevChats, newUserChat]);
-      const generatedText: string = await postBedrock();
-      const newGeneratedChat: Chat = { message: generatedText, isUser: false };
-      setChats((prevChats) => [...prevChats, newGeneratedChat]);
+      // Bedrockにプロンプトを投げて、レスポンスを取得する
+      const stream = predictStream({
+        messages: sendMessage.trim(),
+      });
+      let answer = "";
+      for await (const chunk of stream) {
+        answer += chunk;
+        setChats((prevChats) => {
+          const assistantChat: Chat = { message: answer, isUser: false };
+          return [...prevChats, assistantChat];
+        });
+      }
     } catch (error) {
       console.error(error);
+      // NOTE: 5秒間アラートを表示するように状態を切り替えている。
       setShowErrorAlert(true);
-      // NOTE: 3秒後にはアラートが非表示になる。
       setTimeout(() => {
         setShowErrorAlert(false);
       }, 5000);
     } finally {
       setLoading(false);
     }
-  };
+  }, [chats, inputText]);
 
   return {
     chats,

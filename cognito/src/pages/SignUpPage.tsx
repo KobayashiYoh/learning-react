@@ -5,7 +5,7 @@ import { Form } from "../components/Form";
 import { useSignUpState } from "../hooks/useSignUpState";
 import { PasswordTextField } from "../components/PasswordTextField";
 
-export const SignUp = () => {
+export const SignUpPage = () => {
   const {
     email,
     password,
@@ -45,4 +45,4 @@ export const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpPage;

@@ -1,26 +1,30 @@
 import { Amplify } from "aws-amplify";
 import "@aws-amplify/ui-react/styles.css";
+import { Routes, Route } from "react-router-dom";
+import { SignInPage } from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
 import { ConfirmationCodeInputPage } from "./pages/ConfirmationCodeInputPage";
+import { AuthenticatedUserPage } from "./pages/AuthenticatedUserPage";
 
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolId: String(import.meta.env.VITE_AWS_USER_POOLS_ID), //メモっておいたユーザープールIDをここに!
-      userPoolClientId: String(import.meta.env.VITE_AWS_POOLS_WEB_CLIENT_ID), //メモっておいたクライアントIDをここに!
-      loginWith: {
-        oauth: {
-          domain: "XXXX.auth.ap-northeast-1.amazoncognito.com", //Cognitoドメイン(XXXX => 作成したドメイン名を挿入)
-          scopes: ["openid", "email", "profile"],
-          redirectSignIn: ["http://localhost:3000/login/home"], //ログイン後、リダイレクトするurl
-          redirectSignOut: ["http://localhost:3000/login"], //ログアウト後、リダイレクトするurl
-          responseType: "code",
-          providers: ["Google", { custom: "Line" }], //後述(ソーシャルログイン)
-        },
-      },
+      userPoolId: String(import.meta.env.VITE_AWS_USER_POOLS_ID),
+      userPoolClientId: String(import.meta.env.VITE_AWS_POOLS_WEB_CLIENT_ID),
     },
   },
 });
 
 export default function App() {
-  return <ConfirmationCodeInputPage />;
+  return (
+    <Routes>
+      <Route path="/" element={<SignInPage />} />
+      <Route path="/sign-up" element={<SignUpPage />} />
+      <Route
+        path="/confirmation-code-input"
+        element={<ConfirmationCodeInputPage />}
+      />
+      <Route path="/authenticated-user" element={<AuthenticatedUserPage />} />
+    </Routes>
+  );
 }

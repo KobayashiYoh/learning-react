@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { signUpByEmailAndPassword } from "../services/signUpByEmailAndPassword";
+import { useNavigate } from "react-router-dom";
 
 export const useSignUpState = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -22,6 +24,7 @@ export const useSignUpState = () => {
     try {
       await signUpByEmailAndPassword(email, password);
       alert("サインアップに成功しました！");
+      navigate("/confirmation-code-input");
     } catch (error) {
       console.error("サインアップエラー:", error);
       alert("サインアップに失敗しました。");

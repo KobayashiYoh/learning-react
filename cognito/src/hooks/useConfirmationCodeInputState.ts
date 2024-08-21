@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { sendConfirmationCode } from "../services/sendConfirmationCode";
+import { useNavigate } from "react-router-dom";
 
 export const useConfirmationCodeInputState = (username: string) => {
+  const navigate = useNavigate();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const [error, setError] = useState<string>("");
@@ -22,6 +24,7 @@ export const useConfirmationCodeInputState = (username: string) => {
     try {
       await sendConfirmationCode(username, newCode.join(""));
       alert("コードが正しく認証されました！");
+      navigate("/authenticated-user");
     } catch (error) {
       setError("コードが無効です。もう一度お試しください。");
     } finally {

@@ -18,7 +18,7 @@ export const useSignInState = () => {
   const handleSignIn = async () => {
     try {
       await signInByEmailAndPassword(email, password);
-      navigate("/authenticated-user");
+      navigate("/authenticated-user", { replace: true });
     } catch (error) {
       console.error("ログインエラー:", error);
     }

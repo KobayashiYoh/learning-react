@@ -1,9 +1,15 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import {
+  RoutingAnimationType,
+  RoutingAnimationTypes,
+} from "../types/routingAnimationType";
+import { switchRoutingAnimation } from "../utils/switchRoutingAnimation";
 
 interface PageProps {
   children: ReactNode;
+  animationType?: RoutingAnimationType;
 }
 
 const StyledPage = styled.div`
@@ -17,15 +23,14 @@ const StyledPage = styled.div`
   justify-content: center;
 `;
 
-export const Page: React.FC<PageProps> = (props: PageProps) => {
-  const { children } = props;
+export const Page: React.FC<PageProps> = ({
+  children,
+  animationType = RoutingAnimationTypes.None,
+}: PageProps) => {
+  const { initial, animate, exit } = switchRoutingAnimation(animationType);
   return (
     <StyledPage>
-      <motion.div
-        initial={{ opacity: 0, x: 100 }} // 初期状態: 左側にオフセットし、透明
-        animate={{ opacity: 1, x: 0 }} // マウント時: 位置を元に戻し、不透明に
-        exit={{ opacity: 0, x: -100 }} // アンマウント時: 右側にオフセットし、透明
-      >
+      <motion.div initial={initial} animate={animate} exit={exit}>
         {children}
       </motion.div>
     </StyledPage>

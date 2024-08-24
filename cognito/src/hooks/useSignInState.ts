@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { signInByEmailAndPassword } from "../services/signInByEmailAndPassword";
+import { useNavigate } from "react-router-dom";
 
 export const useSignInState = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -16,10 +18,9 @@ export const useSignInState = () => {
   const handleSignIn = async () => {
     try {
       await signInByEmailAndPassword(email, password);
-      alert("ログインに成功しました！");
+      navigate("/authenticated-user", { replace: true });
     } catch (error) {
       console.error("ログインエラー:", error);
-      alert("ログインに失敗しました。");
     }
   };
 

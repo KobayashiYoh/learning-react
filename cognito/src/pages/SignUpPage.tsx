@@ -4,8 +4,9 @@ import { Page } from "../components/Page";
 import { Form } from "../components/Form";
 import { useSignUpState } from "../hooks/useSignUpState";
 import { PasswordTextField } from "../components/PasswordTextField";
+import { RoutingAnimationTypes } from "../types/routingAnimationType";
 
-export const SignUp = () => {
+export const SignUpPage = () => {
   const {
     email,
     password,
@@ -15,7 +16,7 @@ export const SignUp = () => {
   } = useSignUpState();
 
   return (
-    <Page>
+    <Page animationType={RoutingAnimationTypes.SlideIn}>
       <Form>
         <h2>新規登録</h2>
         <FormTitle>メールアドレス</FormTitle>
@@ -45,4 +46,4 @@ export const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpPage;

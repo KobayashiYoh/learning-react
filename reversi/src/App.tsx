@@ -1,35 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+
+export const TileStatus = {
+  Wall: "Wall",
+  Empty: "Empty",
+  Black: "Black",
+  White: "White",
+} as const;
+
+import styled from "styled-components";
+
+const StyledTile = styled.div`
+  background: #2d9959;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #92bda6;
+  }
+`;
+
+export const Tile = ({ status }: { status: keyof typeof TileStatus }) => {
+  return <StyledTile>{status.substring(0, 3)}</StyledTile>;
+};
+
+const BoardContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+  gap: 2px;
+  width: 640px;
+  height: 640px;
+  background: #333333;
+  padding: 2px;
+`;
+
+export const Board = () => {
+  const tiles = [];
+
+  for (let row = 0; row < 15; row++) {
+    for (let col = 0; col < 15; col++) {
+      const key = `${row}-${col}`;
+      tiles.push(<Tile key={key} status={TileStatus.Wall} />);
+    }
+  }
+
+  return <BoardContainer>{tiles}</BoardContainer>;
+};
+
+const PageBody = styled.div`
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+`;
+
+export const GamePage = () => {
+  return (
+    <PageBody>
+      <Board />
+    </PageBody>
+  );
+};
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  return <GamePage />;
 }
 
-export default App
+export default App;

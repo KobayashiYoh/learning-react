@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   initialReversiBoard,
   showWinner,
-  findFlippableTiles,
+  findFlippableTilesInAllDirection,
   isPass,
 } from "../utils/gameLogics";
 import { TileStatus, TileStatusType } from "../constants/gameConstants";
@@ -27,7 +27,12 @@ export const useGameBoard = () => {
     const selectedTile: TileStatusType = board[row][col];
     if (selectedTile !== TileStatus.Empty) return;
 
-    const flippableTiles = findFlippableTiles(board, row, col, currentTurnTile);
+    const flippableTiles = findFlippableTilesInAllDirection(
+      board,
+      row,
+      col,
+      currentTurnTile
+    );
     if (flippableTiles.length === 0) return;
 
     const newBoard: TileStatusType[][] = board.map((r) => r.slice());

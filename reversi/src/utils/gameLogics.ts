@@ -32,7 +32,35 @@ const isOpponentPlayerTile = (
   return tile !== TileStatus.Empty && tile !== playerTile;
 };
 
-export const findFlippableTiles = (
+const findFlippableTilesInSingleDirection = (
+  board: TileStatusType[][],
+  startX: number,
+  startY: number,
+  dx: number,
+  dy: number,
+  playerTile: TileStatusType
+): [number, number][] => {
+  const flippableTiles: [number, number][] = [];
+  let x = startX + dx;
+  let y = startY + dy;
+
+  const isContinuation =
+    isInBounds(x, y) && isOpponentPlayerTile(board, x, y, playerTile);
+  while (isContinuation) {
+    flippableTiles.push([x, y]);
+    x += dx;
+    y += dy;
+  }
+
+  const flippable =
+    flippableTiles.length > 0 && isInBounds(x, y) && board[x][y] === playerTile;
+  if (flippable) {
+    return flippableTiles;
+  }
+  return [];
+};
+
+export const findFlippableTilesInAllDirection = (
   board: TileStatusType[][],
   row: number,
   col: number,
@@ -41,25 +69,15 @@ export const findFlippableTiles = (
   const flippableTiles: [number, number][] = [];
 
   directions.forEach(([dx, dy]) => {
-    let x = row + dx;
-    let y = col + dy;
-    const unidirectionalFlippableTiles: [number, number][] = [];
-
-    const isContinuation =
-      isInBounds(x, y) && isOpponentPlayerTile(board, x, y, playerTile);
-    while (isContinuation) {
-      unidirectionalFlippableTiles.push([x, y]);
-      x += dx;
-      y += dy;
-    }
-
-    const flippable =
-      unidirectionalFlippableTiles.length > 0 &&
-      isInBounds(x, y) &&
-      board[x][y] === playerTile;
-    if (flippable) {
-      flippableTiles.push(...unidirectionalFlippableTiles);
-    }
+    const tilesToFlip = findFlippableTilesInSingleDirection(
+      board,
+      row,
+      col,
+      dx,
+      dy,
+      playerTile
+    );
+    flippableTiles.push(...tilesToFlip);
   });
 
   return flippableTiles;
@@ -72,7 +90,12 @@ export const isPass = (
   for (let row = 0; row < BOARD_SIZE; row++) {
     for (let col = 0; col < BOARD_SIZE; col++) {
       if (board[row][col] === TileStatus.Empty) {
-        const flippableTiles = findFlippableTiles(board, row, col, playerTile);
+        const flippableTiles = findFlippableTilesInAllDirection(
+          board,
+          row,
+          col,
+          playerTile
+        );
         if (flippableTiles.length > 0) {
           return false;
         }

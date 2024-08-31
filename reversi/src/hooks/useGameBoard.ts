@@ -5,7 +5,7 @@ import {
   initialReversiBoard,
   showWinner,
   findFlippableTiles,
-  checkPass,
+  isPass,
 } from "../utils/gameLogics";
 import { TileStatus, TileStatusType } from "../constants/gameConstants";
 
@@ -37,8 +37,8 @@ export const useGameBoard = () => {
     });
     setBoard(newBoard);
 
-    const nextPlayerMustPass = checkPass(newBoard, nextTurnTile);
-    const currentPlayerMustPass = checkPass(newBoard, currentTurnTile);
+    const nextPlayerMustPass = isPass(newBoard, nextTurnTile);
+    const currentPlayerMustPass = isPass(newBoard, currentTurnTile);
     const bothPlayersMustPass = nextPlayerMustPass && currentPlayerMustPass;
     if (bothPlayersMustPass) {
       setGameOver(true);

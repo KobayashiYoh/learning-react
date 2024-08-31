@@ -22,55 +22,64 @@ export const initialReversiBoard = (): TileStatusType[][] => {
 const isInBounds = (x: number, y: number): boolean =>
   x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
 
-const isOpponentTile = (
+const isOpponentPlayerTile = (
   board: TileStatusType[][],
   x: number,
   y: number,
-  player: TileStatusType
-): boolean => board[x][y] !== TileStatus.Empty && board[x][y] !== player;
+  playerTile: TileStatusType
+): boolean => {
+  const tile: TileStatusType = board[x][y];
+  return tile !== TileStatus.Empty && tile !== playerTile;
+};
 
 export const findFlippableTiles = (
   board: TileStatusType[][],
   row: number,
   col: number,
-  player: TileStatusType
+  playerTile: TileStatusType
 ): [number, number][] => {
   const flippableTiles: [number, number][] = [];
 
   directions.forEach(([dx, dy]) => {
     let x = row + dx;
     let y = col + dy;
-    const tilesToFlip: [number, number][] = [];
+    const unidirectionalFlippableTiles: [number, number][] = [];
 
-    while (isInBounds(x, y) && isOpponentTile(board, x, y, player)) {
-      tilesToFlip.push([x, y]);
+    const isContinuation =
+      isInBounds(x, y) && isOpponentPlayerTile(board, x, y, playerTile);
+    while (isContinuation) {
+      unidirectionalFlippableTiles.push([x, y]);
       x += dx;
       y += dy;
     }
 
-    if (tilesToFlip.length > 0 && isInBounds(x, y) && board[x][y] === player) {
-      flippableTiles.push(...tilesToFlip);
+    const flippable =
+      unidirectionalFlippableTiles.length > 0 &&
+      isInBounds(x, y) &&
+      board[x][y] === playerTile;
+    if (flippable) {
+      flippableTiles.push(...unidirectionalFlippableTiles);
     }
   });
 
   return flippableTiles;
 };
 
-export const checkPass = (
+export const isPass = (
   board: TileStatusType[][],
-  player: TileStatusType
+  playerTile: TileStatusType
 ): boolean => {
   for (let row = 0; row < BOARD_SIZE; row++) {
     for (let col = 0; col < BOARD_SIZE; col++) {
       if (board[row][col] === TileStatus.Empty) {
-        const flippableTiles = findFlippableTiles(board, row, col, player);
+        const flippableTiles = findFlippableTiles(board, row, col, playerTile);
         if (flippableTiles.length > 0) {
-          return false; // 置ける場所があればパスではない
+          return false;
         }
       }
     }
   }
-  return true; // 置ける場所がない
+  return true;
 };
 
 const countTiles = (

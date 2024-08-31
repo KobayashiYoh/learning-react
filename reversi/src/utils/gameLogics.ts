@@ -4,21 +4,23 @@ import {
   directions,
   TileStatus,
   TileStatusType,
+  BOARD_SIZE,
 } from "../constants/gameConstants";
 
 export const initialReversiBoard = (): TileStatusType[][] => {
-  const initialBoard: TileStatusType[][] = Array(8)
+  const initialBoard: TileStatusType[][] = Array(BOARD_SIZE)
     .fill(null)
-    .map(() => Array(8).fill(TileStatus.Empty));
-  initialBoard[3][3] = TileStatus.White;
-  initialBoard[3][4] = TileStatus.Black;
-  initialBoard[4][3] = TileStatus.Black;
-  initialBoard[4][4] = TileStatus.White;
+    .map(() => Array(BOARD_SIZE).fill(TileStatus.Empty));
+  const mid = BOARD_SIZE / 2;
+  initialBoard[mid - 1][mid - 1] = TileStatus.White;
+  initialBoard[mid - 1][mid] = TileStatus.Black;
+  initialBoard[mid][mid - 1] = TileStatus.Black;
+  initialBoard[mid][mid] = TileStatus.White;
   return initialBoard;
 };
 
 const isInBounds = (x: number, y: number): boolean =>
-  x >= 0 && x < 8 && y >= 0 && y < 8;
+  x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
 
 const isOpponentTile = (
   board: TileStatusType[][],
@@ -58,8 +60,8 @@ export const checkPass = (
   board: TileStatusType[][],
   player: TileStatusType
 ): boolean => {
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 8; col++) {
+  for (let row = 0; row < BOARD_SIZE; row++) {
+    for (let col = 0; col < BOARD_SIZE; col++) {
       if (board[row][col] === TileStatus.Empty) {
         const flippableTiles = findFlippableTiles(board, row, col, player);
         if (flippableTiles.length > 0) {
